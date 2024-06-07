@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Hello world action step
         id: hello
-        uses: tejasrinivask/elixir_testing@v1.0.2
+        uses: tejasrinivask/elixir_testing@v1.0.3
         with:
           who-to-greet: 'Teja the Soggy Thinker'
       # Use the output from the `hello` step
