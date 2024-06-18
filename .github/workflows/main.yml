@@ -9,9 +9,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Hello world action step
         id: hello
-        uses: tejasrinivask/elixir_testing@v1.0.3
+        uses: tejasrinivask/elixir_testing@v1.0.4
         with:
-          who-to-greet: 'Teja the Soggy Thinker'
+          who-to-greet: 'Monkey the dragon'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
