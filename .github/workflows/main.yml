@@ -10,7 +10,7 @@ jobs:
 
       - name: Hello world action1 step
         id: hello-action1
-        uses: tejasrinivask/elixir_testing/.github/actions/action1@v1.0.5
+        uses: tejasrinivask/elixir_testing/.github/actions/action1@v1.0.6
         with:
           who-to-greet: 'Monkey the dragon'
       # Use the output from the `hello` step
@@ -19,7 +19,7 @@ jobs:
 
       - name: Hello world action step
         id: hello-action2
-        uses: tejasrinivask/elixir_testing/.github/actions/action2@v1.0.5
+        uses: tejasrinivask/elixir_testing/.github/actions/action2@v1.0.6
         with:
           who-to-greet: 'Monkey the raven'
       # Use the output from the `hello` step
