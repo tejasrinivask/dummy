@@ -7,11 +7,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Hello world action step
-        id: hello
-        uses: tejasrinivask/elixir_testing@v1.0.4
+
+      - name: Hello world action1 step
+        id: hello-action1
+        uses: tejasrinivask/elixir_testing/.github/actions/action1@v1.0.5
         with:
           who-to-greet: 'Monkey the dragon'
       # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - name: Get the output time from action1
+        run: echo "The time from action1 was ${{ steps.hello-action1.outputs.time }}"
+
+      - name: Hello world action step
+        id: hello-action2
+        uses: tejasrinivask/elixir_testing/.github/actions/action2@v1.0.5
+        with:
+          who-to-greet: 'Monkey the raven'
+      # Use the output from the `hello` step
+      - name: Get the output time from action2
+        run: echo "The time was ${{ steps.hello-action2.outputs.time }}"
