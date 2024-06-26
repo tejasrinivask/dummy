@@ -1,0 +1,63 @@
+name: build-notes-generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      current_tag:
+        description: "Current Tag"
+        required: true
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  build-note-generator:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Build notes generation
+        id: build-notes-generation
+        uses: tejasrinivask/new_workflow/.github/actions/create-build-notes@v0.0.7
+        with:
+          jira_pass: ${{ secrets.JIRA_PASSWORD }}
+          gh_token: ${{ secrets.GIT_COLLAB_TOKEN }}
+          git_repo: ${{ github.repository }}
+          base_branch: ${{ github.ref_name }}
+          tag: ${{ github.event.inputs.current_tag }}
+
+      # add custom step if the configuration needs to be updated here instead of using
+      # generated configuration changes
+      # Sample step
+      # - name: Patch configuration changes in build notes
+      #   run: |
+      #     python myscript.py ${{ github.workspace }}/build_notes.yaml
+
+      - name: Generating pr
+        run: |
+          BASE_BRANCH=${{ github.ref_name }}
+          TAG_NAME=${{ github.event.inputs.current_tag }}
+          BUILD_NOTES_PR="rc-build-notes-$TAG_NAME"
+          # configure git
+          git config --local user.email "collaborate@amagi.com"
+          git config --local user.name "amagi-collaborate"
+          git switch $BASE_BRANCH
+          existed_in_remote=$(git ls-remote --heads origin $BUILD_NOTES_PR)
+          if [[ -n ${existed_in_remote} ]]; then
+            # delete branch if it already exists
+            git push origin --delete $BUILD_NOTES_PR
+          fi
+          git switch -c $BUILD_NOTES_PR
+          # push the changes
+          find . -type d -name '__pycache__' -prune -o -type f -print0 | xargs -0 git add
+          git commit -m "Auto commit"
+          git push --set-upstream origin $BUILD_NOTES_PR
+          # create pr
+          gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $TAG_NAME" --body "Skip PR validation<br>TAG_NAME: $TAG_NAME"
+        env:
+          GH_TOKEN: ${{ secrets.GIT_COLLAB_TOKEN }}
