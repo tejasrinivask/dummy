@@ -1,0 +1,23 @@
+name: pr-validator
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  pr-validator:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pr validation
+        id: pr-validation
+        uses: tejasrinivask/new_workflow/.github/actions/create-build-notes@v0.0.7
+        with:
+          jira_pass: ${{ secrets.JIRA_PASSWORD }}

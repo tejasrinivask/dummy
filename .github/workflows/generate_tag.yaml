@@ -1,0 +1,32 @@
+name: generate-tag
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  generate-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Tagging release
+        if: github.event.pull_request.merged == true
+        id: tagging-release
+        uses: tejasrinivask/new_workflow/.github/actions/create-build-notes@v0.0.7
+        with:
+          jira_pass: ${{ secrets.JIRA_PASSWORD }}
+          gh_token: ${{ secrets.GIT_COLLAB_TOKEN }}
+          git_repo: ${{ github.repository }}
+          pr_body: ${{ github.event.pull_request.body }}
+          commit_sha: ${{ github.event.pull_request.head.sha }}
+          src_branch: ${{ github.head_ref }}
